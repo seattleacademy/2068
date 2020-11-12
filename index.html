@@ -1,25 +1,89 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <title>Matching Game</title>
+    <style>
+    body {
+        background-color: lightgrey;
+    }
+
+    .grid {
+        display: flex;
+        flex-wrap: wrap;
+        height: 300px;
+        width: 400px;
+        background: green;
+    }
+
+    span {
+        background: red;
+        height: 90px;
+        width: 90px;
+        margin: 5px;
+        color: white;
+        text-align: center;
+        line-height: 90px;
+        font-size: 24px;
+    }
+    </style>
+</head>
+
 <body>
+    <h3>Score: <b id="result">0</b></h3>
+    <div class="grid">
+    </div>
+    <script>
+    let cardsChosen = []
+    let cardsChosenId = []
+    const resultsDisplay = document.querySelector('#result');
+    let wins = 0;
+    const cardArray = [{ name: "bob" }, { name: "bob" }, { name: "lynn" }, { name: "lynn" }, { name: "lois" }, { name: "lois" }, { name: "mike" }, { name: "mike" }, { name: "laconna" }, { name: "laconna" }, { name: "gary" }, { name: "gary" }]
 
-<h1>The template Element</h1>
+    cardArray.sort(() => .5 - Math.random());
+    console.log(cardArray);
 
-<p>Click the button below to display the hidden content from the template element.</p>
+    const grid = document.querySelector(".grid");
 
-<button onclick="showContent()">Show hidden content</button>
+    function createBoard() {
+        for (let i = 0; i < cardArray.length; i++) {
+            let card = document.createElement('span');
+            card.setAttribute('data-id', i);
+            card.addEventListener('click', flipCard)
+            grid.appendChild(card)
+        }
+    }
+    createBoard()
 
-<template>
-  <h2>Flower</h2>
-  <img src="img_white_flower.jpg" width="214" height="204">
-</template>
+    function checkForMatch() {
+        var cards = document.querySelectorAll('span');
+        const optionOneId = cardsChosenId[0];
+        const optionTwoId = cardsChosenId[1];
+        if (cardArray[optionOneId].name === cardArray[optionTwoId].name) {
+            console.log('match');
+            wins = wins + 1;
+            resultsDisplay.textContent = wins;
+            console.log(wins);
+        } else {
+            console.log('nomatch');
+            cards[optionOneId].textContent = "";
+            cards[optionTwoId].textContent = "";
+        }
+        cardsChosen = [];
+        cardsChosenId = [];
+    }
 
-<script>
-function showContent() {
-  var temp = document.getElementsByTagName("template")[0];
-  var clon = temp.content.cloneNode(true);
-  document.body.appendChild(clon);
-}
-</script>
-
+    function flipCard() {
+        const cardId = this.getAttribute('data-id');
+        cardsChosen.push(cardArray[cardId]);
+        cardsChosenId.push(cardId);
+        this.textContent = cardArray[cardId].name;
+        if (cardsChosen.length === 2) {
+            setTimeout(checkForMatch, 500);
+        }
+        console.log(cardsChosen, cardsChosenId);
+    }
+    </script>
 </body>
+
 </html>
